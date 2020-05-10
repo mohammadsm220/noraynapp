@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "301500235359",
+    "firebase_url": "https://noraynapp-46be2.firebaseio.com",
+    "project_id": "noraynapp-46be2",
+    "storage_bucket": "noraynapp-46be2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301500235359:android:0f87b23400e62f37b4a5ea",
+        "android_client_info": {
+          "package_name": "com.norayn.noraynapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "301500235359-tliflkho08ceddq68vjic1mmk82tvd0h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr5CPJIF3GZWkAbnm259U9ZLG3isI7iSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "301500235359-tliflkho08ceddq68vjic1mmk82tvd0h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

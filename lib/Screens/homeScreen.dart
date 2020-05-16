@@ -14,45 +14,21 @@ class HomeScreen extends StatelessWidget {
     List<Widget> view = [];
     var newsview = Provider.of<List<News>>(context);
     var images = Provider.of<List<ImagesStream>>(context);
+    try{
     view.add(
       Text(
         'الأخبار',
         style: TextStyle(fontSize: 30, color: Colors.black87),
       ),
     );
-    // if (images.isNotEmpty) {
       view.add(
         SliderView(),
       );
-    // } else {
-    //   view.add(
-    //     Container(
-    //       decoration: BoxDecoration(
-    //         borderRadius: BorderRadius.all(Radius.circular(10)),
-    //         image: DecorationImage(
-    //           image: AssetImage(
-    //             'images/home.png',
-    //           ),
-    //           fit: BoxFit.cover,
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // }
-    // view.add(Text('News'));
-    // if (newsview.isNotEmpty) {
       for (int i = 0; i < newsview.length; i++) {
         view.add(NewsCard(
           content: newsview[i].title ?? '',
         ));
       }
-    // } else {
-    //   Card(
-    //     child: ListTile(
-    //       title: Text('تطبيق نورين'),
-    //     ),
-    //   );
-    // }
     view.add(
       Text(
         'ليصلك جديداً',
@@ -61,7 +37,11 @@ class HomeScreen extends StatelessWidget {
           color: Colors.black87,
         ),
       ),
-    );
+    );}catch(e){
+      Container(
+        child: CircularProgressIndicator(),
+      );
+    }
     view.add(Subscribe());
     return Scaffold(
       appBar: AppBar(

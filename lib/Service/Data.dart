@@ -3,6 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Data extends ChangeNotifier {
+  TextEditingController _controllerCom = TextEditingController();
+  TextEditingController _controllerName = TextEditingController();
+  TextEditingController _controllerLive = TextEditingController();
+
+  TextEditingController get controllerCom =>_controllerCom;
+  TextEditingController get controllerName =>_controllerName;
+  TextEditingController get controllerLive =>_controllerLive;
   bool _emailOn;
   bool _phoneOn;
   bool _man;
@@ -15,15 +22,15 @@ class Data extends ChangeNotifier {
     1: 'TextScreen',
     2: 'NoeaynScreen',
     3: 'SalesScreen',
-    4:'ActivitesScreen',
+    4: 'ActivitesScreen',
   };
   int _numPage = 0;
-  
-   Data() {
+
+  Data() {
     _emailOn = true;
-    _phoneOn=false;
+    _phoneOn = false;
     _woman = true;
-    _man=false;
+    _man = false;
   }
   String get name => _name;
   String get live => _live;
@@ -32,31 +39,32 @@ class Data extends ChangeNotifier {
   bool get email => _emailOn;
   bool get phone => _phoneOn;
 
-   String setPage(int value) {
+  String setPage(int value) {
     _numPage = value;
     return _navigater[_numPage];
   }
 
-  void setname (String value){
+  void setname(String value) {
     _name = value;
     notifyListeners();
   }
-  void setlive (String value){
+
+  void setlive(String value) {
     _live = value;
     notifyListeners();
   }
-  void setcommunication (String value){
+
+  void setcommunication(String value) {
     _communication = value;
     notifyListeners();
   }
 
   void setContect(String way) {
-    if(way == 'email'){
-      _emailOn=true;
+    if (way == 'email') {
+      _emailOn = true;
       _phoneOn = false;
-    }
-    else if(way=='phone' ){
-      _emailOn=false;
+    } else if (way == 'phone') {
+      _emailOn = false;
       _phoneOn = true;
     }
     notifyListeners();
@@ -67,16 +75,13 @@ class Data extends ChangeNotifier {
   bool get woman => _woman;
 
   void setGender(String gender) {
-    if(gender == 'woman'){
-      _woman=true;
+    if (gender == 'woman') {
+      _woman = true;
       _man = false;
-    }
-    else if(gender=='man' ){
-      _woman=false;
+    } else if (gender == 'man') {
+      _woman = false;
       _man = true;
     }
     notifyListeners();
   }
-  
-  
 }

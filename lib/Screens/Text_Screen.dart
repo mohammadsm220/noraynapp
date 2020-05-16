@@ -6,6 +6,7 @@ import 'package:noraynapp/Constant/constant.dart';
 import 'package:provider/provider.dart';
 import 'package:noraynapp/Service/Suggestions.dart';
 
+
 class TextScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,11 +26,12 @@ class TextScreen extends StatelessWidget {
             ),
           )),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-          child: Column(
-            children: <Widget>[
-              Expanded(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 child: ListView(
                   children: <Widget>[
                     SizedBox(
@@ -49,6 +51,7 @@ class TextScreen extends StatelessWidget {
                       setvalue: (String value) {
                         _db.setname(value);
                       },
+                      controller: _db.controllerName,
                     ),
                     SizedBox(
                       height: 10,
@@ -81,6 +84,20 @@ class TextScreen extends StatelessWidget {
                       text: 'أخراى',
                       setvalue: _db.other,
                     ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: 3.0,
+                        bottom: 15.0,
+                      ),
+                      child: TextFiled(
+                        name: 'أخرى',
+                        edit: _db.other,
+                        setvalue: (value) {
+                          _db.setotherString(value);
+                        },
+                        controller: _db.controllerOther,
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -89,6 +106,7 @@ class TextScreen extends StatelessWidget {
                       setvalue: (String value) {
                         _db.setemail(value);
                       },
+                      controller: _db.controllerEmail,
                     ),
                     SizedBox(
                       height: 10,
@@ -98,10 +116,13 @@ class TextScreen extends StatelessWidget {
                       setvalue: (String value) {
                         _db.setphone(value);
                       },
+                      controller: _db.controllerPhone,
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
+
+                       Text('الشكوى او الاقتراح لـ',textAlign: TextAlign.start,style: TextStyle(fontSize:20),),
                     DropDpwnMenu(),
                     SizedBox(
                       height: 10,
@@ -135,6 +156,7 @@ class TextScreen extends StatelessWidget {
                       // hack textfield height
                       padding: EdgeInsets.only(bottom: 40.0),
                       child: TextField(
+                        controller: _db.controllerText,
                         onChanged: (value) => _db.settext(value),
                         maxLines: 10,
                         decoration: InputDecoration(
@@ -156,32 +178,75 @@ class TextScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () {
-                        _firestor.collection('suggestion').add({
-                          'name': _db.name,
-                          'benefiting': _db.benefiting,
-                          'employee': _db.employee,
-                          'visitor': _db.visitor,
-                          'email': _db.email,
-                          'other': _db.other,
-                          'phone': _db.phone,
-                          'suggestion': _db.suggestion,
-                          'complaint': _db.complaint,
-                          'remarking': _db.remarking,
-                          'text': _db.text,
-                        });
+                        if (_db.seand()) {
+                          _firestor.collection('suggestion').add(
+                            {
+                              'name': _db.name,
+                              'benefiting': _db.benefiting,
+                              'employee': _db.employee,
+                              'visitor': _db.visitor,
+                              'email': _db.email,
+                              'other': _db.other,
+                              'phone': _db.phone,
+                              'TO':_db.drobValue,
+                              'suggestion': _db.suggestion,
+                              'complaint': _db.complaint,
+                              'remarking': _db.remarking,
+                              'text': _db.text,
+                            },
+                          );
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('تم أرسال طلبك'),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      onPressed: () {
+                                        _db.controllerEmail.clear();
+                                        _db.controllerName.clear();
+                                        _db.controllerOther.clear();
+                                        _db.controllerPhone.clear();
+                                        _db.controllerText.clear();
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('موافق'),
+                                    ),
+                                  ],
+                                );
+                              });
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('عفواً'),
+                                  content:
+                                      Text('يجب أكمال جميع الخانات المطلوبة'),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('موافق'),
+                                    ),
+                                  ],
+                                );
+                              });
+                        }
                         // z.collection('test1').add({'ok': Contect});
                       },
                     ),
                   ],
                 ),
               ),
-              // TextField(),
-              Align(
-                alignment: FractionalOffset.bottomCenter,
-                child: NavigationBar(),
-              ),
-            ],
-          ),
+            ),
+            // TextField(),
+            Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: NavigationBar(),
+            ),
+          ],
         ),
       ),
     );
@@ -211,17 +276,22 @@ class CheckBox extends StatelessWidget {
 }
 
 class TextFiled extends StatelessWidget {
-  TextFiled({this.name, this.setvalue});
+  TextFiled({this.name, this.setvalue, this.edit = true,@required this.controller});
   String name;
   Function setvalue;
+  bool edit;
+  TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return TextField(
-        obscureText: false,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.black),
-        onChanged: setvalue,
-        keyboardType: TextInputType.emailAddress,
-        decoration: kTextDecoration.copyWith(hintText: name));
+      controller: controller,
+      enabled: edit,
+      obscureText: false,
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.black),
+      onChanged: setvalue,
+      keyboardType: TextInputType.emailAddress,
+      decoration: kTextDecoration.copyWith(hintText: name),
+    );
   }
 }

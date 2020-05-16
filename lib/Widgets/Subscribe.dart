@@ -17,7 +17,7 @@ class Subscribe extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey,
-              offset: Offset(2.0, 2.0), //(x,y)
+              offset: Offset(2.0, 2.0), //(_controller,y)
               blurRadius: 5.0,
               spreadRadius: 0.0,
             ),
@@ -45,16 +45,15 @@ class Subscribe extends StatelessWidget {
                       Provider.of<Data>(context, listen: false)
                           .setContect('email');
                     },
-                    child: 
-                        Text(
-                          'البريد',
-                          style: TextStyle(
-                            // fontSize: 20,
-                            color: Provider.of<Data>(context).email
-                                ? Colors.white
-                                : Color(0xFF663e60),
-                          ),
-                        ),
+                    child: Text(
+                      'البريد',
+                      style: TextStyle(
+                        // fontSize: 20,
+                        color: Provider.of<Data>(context).email
+                            ? Colors.white
+                            : Color(0xFF663e60),
+                      ),
+                    ),
                     backgroundColor: Provider.of<Data>(context).email
                         ? Color(0xFF663e60)
                         : Colors.white,
@@ -82,10 +81,13 @@ class Subscribe extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              TextFiled(_db.email ? 'noraynladies@gmil.com' : '0504246246',
+              TextFiled(
+                _db.email ? 'noraynladies@gmil.com' : '0504246246',
                   (value) {
                 _db.setcommunication(value);
-              }),
+              },
+              _db.controllerCom,
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -144,13 +146,17 @@ class Subscribe extends StatelessWidget {
               ),
               TextFiled('الاسم', (value) {
                 _db.setname(value);
-              }),
+              },
+              _db.controllerName,
+              ),
               SizedBox(
                 height: 10,
               ),
               TextFiled('المنطقة', (value) {
                 _db.setlive(value);
-              }),
+              },
+              _db.controllerLive,
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -164,17 +170,56 @@ class Subscribe extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
-                  coller.collection('test1').add({
-                    'communication': _db.communication,
-                    'name': _db.name,
-                    'live': _db.live,
-                    'man': _db.man,
-                    'woman': _db.woman,
-                    'email': _db.email,
-                    'phone': _db.phone,
-                  });
-
-                  // coller.collection('test1').add({'ok': Contect});
+                  if (_db.communication != null &&
+                      _db.name != null &&
+                      _db.live != null) {
+                    coller.collection('test1').add(
+                      {
+                        'communication': _db.communication,
+                        'name': _db.name,
+                        'live': _db.live,
+                        'man': _db.man,
+                        'woman': _db.woman,
+                        'email': _db.email,
+                        'phone': _db.phone,
+                      },
+                    );
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('تم أرسال طلبك'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  _db.controllerCom.clear();
+                                  _db.controllerName.clear();
+                                  _db.controllerLive.clear();
+                                  Navigator.pop(context);
+                                },
+                                child: Text('موافق'),
+                              ),
+                            ],
+                          );
+                        });
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('عفواً'),
+                            content: Text('يجب أكمال جميع الخانات المطلوبة'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('موافق'),
+                              ),
+                            ],
+                          );
+                        });
+                  }
                 },
               ),
               SizedBox(
@@ -189,17 +234,20 @@ class Subscribe extends StatelessWidget {
 }
 
 class TextFiled extends StatelessWidget {
-  TextFiled(this.name, this.onTap);
+  TextFiled(this.name, this.onTap,this._controller);
   String name;
   Function onTap;
+  TextEditingController _controller;
   @override
   Widget build(BuildContext context) {
     return TextField(
-        obscureText: false,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.black),
-        onChanged: onTap,
-        keyboardType: TextInputType.emailAddress,
-        decoration: kTextDecoration.copyWith(hintText: name));
+      controller: _controller,
+      obscureText: false,
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.black),
+      onChanged: onTap,
+      keyboardType: TextInputType.emailAddress,
+      decoration: kTextDecoration.copyWith(hintText: name),
+    );
   }
 }
